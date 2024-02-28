@@ -35,7 +35,7 @@
  * 3: de_DE_s: "Es ist" only at full and half hour
  * 4: de_DE_s1: "Es ist" only at full and half hour + Minutes in Last row (new front Plate De_de_s1)
  */
-#define GRID_LANGUAGE de_DE
+#define GRID_LANGUAGE de_DE_alt_s1
 
 /* Position of single minute LEDs
  *  
@@ -47,5 +47,14 @@
 #define GRID_SINGLE_MINUTES 1
 
 /* Data PIN, where the LED strip is connected to */
-#define DATA_PIN D4
+#define DATA_PIN D0
 #define FASTLED_INTERNAL
+
+//Analog PIN for Photoresistor
+#define PHOTO_PIN A0
+
+//Data PIN & Type for DHT Sensor
+#define DHT_SENSOR_PIN D5
+#define DHT_SENSOR_TYPE DHT22
+
+

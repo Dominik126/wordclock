@@ -7,6 +7,8 @@
 #include <NTPClient.h>
 #include <WiFiUdp.h>
 #include <FS.h>
+#include <ESPping.h>
+
 
 #include "src/grid.h"
 #include "src/wifi.h"
@@ -20,11 +22,16 @@
 #include "src/gui.h"
 #include "src/controller.h"
 #include "src/healthcheck.h"
+#include "src/temperature.h"
+#include "src/ping.h"
+
+//DHT dht_sensor(D1, DHT22);
 
 void setup() {
   Serial.begin(115200);
   Serial.println();
   SPIFFS.begin();
+  //dht_sensor.begin();
 
   if (DATA_PIN != D4){
     // If we use a data pin different than d4, we will deactivate d4 because it triggers the blue board status led
@@ -32,6 +39,8 @@ void setup() {
     pinMode(D4, OUTPUT); // Define LED pin as output
     digitalWrite(D4, HIGH); // Switch the blue board status LED OFF
   }
+
+  DhtValues::setup();
 
   Config::load();
 
@@ -51,4 +60,5 @@ void setup() {
 void loop() {
   Time::loop();
   HttpServer::loop();
+  //Grid::setTime(Time::hour, Time::minute);
 }

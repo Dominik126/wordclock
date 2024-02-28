@@ -4,6 +4,7 @@
 #include "color.h"
 #include "config.h"
 #include "led.h"
+#include "temperature.h"
 
 String Gui::pad(int value) {
   if(value < 10) {
@@ -189,7 +190,10 @@ String Gui::createNav() {
 String Gui::createScript() {
   String content = "";
 
-  content += "window.onload=function(){var e=function(e){return document.getElementById(e)},n=document.querySelector('nav'),t=n.querySelectorAll('li'),d=document.querySelectorAll('main section'),i=e('save'),a=e('reset_wifi'),o=e('reset_wifi_message'),c='color',l={fg:e('fg'),bg:e('bg'),power_supply:e('power_supply'),brightness:e('brightness'),healthcheck:e('healthcheck'),tzAuto:e('tz_auto'),tz:e('tz'),ntp:e('ntp'),dndActive:e('dnd_active'),dndSH:e('dnd_s_h'),dndSM:e('dnd_s_m'),dndEH:e('dnd_e_h'),dndEM:e('dnd_e_m')};t.forEach((function(n){n.onclick=function(n){if('li'==n.currentTarget.tagName.toLowerCase()&&n.currentTarget.hasAttribute('name')){c=n.currentTarget.getAttribute('name');for(var a=0;a<t.length;a++)t[a].classList.remove('active');for(n.currentTarget.classList.add('active'),a=0;a<d.length;a++)d[a].classList.remove('active');i.style.display='wifi'==c?'none':'inline-block',e(c).classList.add('active')}}})),i.onclick=function(e){var n={},t='/api/'+c;if('color'==c)n.fg=l.fg.value,n.bg=l.bg.value,n.power_supply=l.power_supply.value,n.brightness=l.brightness.value,n.healthcheck=l.healthcheck.value;else if('time'==c)n.tz_auto=l.tzAuto.value,n.tz=l.tz.value,n.ntp=l.ntp.value;else{if('dnd'!=c)return;n.dnd_active=l.dndActive.value,n.dnd_start_hour=l.dndSH.value,n.dnd_start_minute=l.dndSM.value,n.dnd_end_hour=l.dndEH.value,n.dnd_end_minute=l.dndEM.value}fetch(t,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(n)}).then((function(e){}))},a.onclick=function(e){fetch('/api/wifi',{method:'DELETE',headers:{'Content-Type':'application/json'},body:''}).then((function(e){})),n.classList.add('disabled'),a.style.display='none',o.style.display='block'}};";
+  content += "window.onload=function(){var e=function(e){return document.getElementById(e)},n=document.querySelector('nav'),t=n.querySelectorAll('li'),d=document.querySelectorAll('main section'),i=e('save'),a=e('reset_wifi'),o=e('reset_wifi_message'),c='color',l={fg:e('fg'),bg:e('bg'),power_supply:e('power_supply'),brightness:e('brightness'),healthcheck:e('healthcheck'),autobrightness:e('autobrightness'),tzAuto:e('tz_auto'),tz:e('tz'),ntp:e('ntp'),dndActive:e('dnd_active'),dndSH:e('dnd_s_h'),dndSM:e('dnd_s_m'),dndEH:e('dnd_e_h'),dndEM:e('dnd_e_m')};t.forEach((function(n){n.onclick=function(n){if('li'==n.currentTarget.tagName.toLowerCase()&&n.currentTarget.hasAttribute('name')){c=n.currentTarget.getAttribute('name');for(var a=0;a<t.length;a++)t[a].classList.remove('active');for(n.currentTarget.classList.add('active'),a=0;a<d.length;a++)d[a].classList.remove('active');i.style.display='wifi'==c?'none':'inline-block',e(c).classList.add('active')}}})),i.onclick=function(e){var n={},t='/api/'+c;if('color'==c)n.fg=l.fg.value,n.bg=l.bg.value,n.power_supply=l.power_supply.value,n.brightness=l.brightness.value,n.healthcheck=l.healthcheck.value,n.autobrightness=l.autobrightness.value;else if('time'==c)n.tz_auto=l.tzAuto.value,n.tz=l.tz.value,n.ntp=l.ntp.value;else{if('dnd'!=c)return;n.dnd_active=l.dndActive.value,n.dnd_start_hour=l.dndSH.value,n.dnd_start_minute=l.dndSM.value,n.dnd_end_hour=l.dndEH.value,n.dnd_end_minute=l.dndEM.value}fetch(t,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(n)}).then((function(e){}))},a.onclick=function(e){fetch('/api/wifi',{method:'DELETE',headers:{'Content-Type':'application/json'},body:''}).then((function(e){})),n.classList.add('disabled'),a.style.display='none',o.style.display='block'}};";
+  
+  content += "setInterval(function(){var xhttp=new XMLHttpRequest();xhttp.onreadystatechange=function(){if(this.readyState==4 && this.status==200){document.getElementById(\"temperature\").innerHTML=this.responseText;}};xhttp.open(\"GET\",\"/temperature\",true);xhttp.send();}, 10000 );";
+  content += "setInterval(function(){var xhttp=new XMLHttpRequest();xhttp.onreadystatechange=function(){if(this.readyState==4 && this.status==200){document.getElementById(\"humidity\").innerHTML=this.responseText;}};xhttp.open(\"GET\", \"/humidity\",true);xhttp.send();}, 10000 ) ;";
 
   return content;
 }
@@ -204,7 +208,14 @@ String Gui::createContent() {
   content += "<div><label>Hintergrundfarbe</label><input id=\"bg\" value=\"#" + Color::rgbToHex(Config::color_bg) + "\" type=\"color\"></div>";
   content += "<div><label>Stromversorgung in mA</label><input id=\"power_supply\" type=\"number\" min=0 step=\"100\" value=\"" + String(Config::power_supply) + "\"></div>";
   content += "<div>";
-  content += "<label>Helligkeit</label>";
+  
+  content += "</select>";
+  content += "<div><label>Automatische Helligkeit</label><select id=\"autobrightness\">";
+  content += Gui::htmlOption("Inaktiv", String(0), String(Config::autobrightness));
+  content += Gui::htmlOption("Aktiv", String(1), String(Config::autobrightness));
+  content += "</select></div>";
+  
+  content += "<label>Maximale Helligkeit</label>";
   content += "<select id=\"brightness\">";
 
   for (double brightness_percnt = 0.0; brightness_percnt < Led::getMaxBrightnessPercnt(); brightness_percnt+=0.05) {
@@ -217,10 +228,15 @@ String Gui::createContent() {
   }
 
   content += "</select>";
-  content += "<div><label>LED check bei Start durchführen</label><select id=\"healthcheck\">";
+  content += "<div><br><label>LED check bei Start durchführen</label><select id=\"healthcheck\">";
   content += Gui::htmlOption("Inaktiv", String(0), String(Config::healthcheck));
   content += Gui::htmlOption("Aktiv", String(1), String(Config::healthcheck));
   content += "</select></div>";
+  
+  content += "<div><label><h1><font color= \"red\">&nbsp&#x1F321</font> Temperatur: " + String(DhtValues::temp) + " °C<br>";
+  content += "&#x1F4A7 Luftfeuchte: " + String(DhtValues::humi) + " %</h1><br></label>";
+// content += "<p><i class=\"fa fa-thermometer-half\" aria-hidden=\"true\"></i><span class=\"dht-labels\">Temperature</span><span id=\"temperature\">%TEMPERATURE%</span><sup class=\"units\">°C</sup></p>";
+//  content += "<p><i class=\"fas fa-tint\"</i><span class=\"dht-labels\">Humidity</span><span id=\"humidity\">%HUMIDITY%</span><sup class=\"units\">%</sup></p>";
 
   content += "</div>";
   content += "</section>";
@@ -305,6 +321,7 @@ String Gui::createFooter() {
 }
 
 
+
 String Gui::index() {
   String content = "";
 
@@ -322,6 +339,7 @@ String Gui::index() {
   content += Gui::createScript();
   content += "</script>";
   content += "</head>";
+  
   content += "<body>";
 
   content += "<div id=\"c\">";
@@ -332,4 +350,16 @@ String Gui::index() {
   content += "</body></html>";
 
   return content;
+}
+
+// Replaces placeholder with DHT values
+String processor(const String& var){
+  //Serial.println(var);
+  if(var == "temperature"){
+    return String(DhtValues::temp);
+  }
+  else if(var == "humidity"){
+    return String(DhtValues::humi);
+  }
+  return String();
 }

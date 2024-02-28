@@ -8,6 +8,7 @@ class Time {
   public:
     static int hour;
     static int minute;
+	static int second;
     static WiFiUDP udp;
     static NTPClient ntpClient;
 

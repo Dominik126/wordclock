@@ -14,6 +14,17 @@ void HttpServer::setup() {
 	HttpServer::web.on("/api/time", HTTP_PUT, Controller::saveTime);
 	HttpServer::web.on("/api/dnd", HTTP_PUT, Controller::saveDnd);
 	HttpServer::web.on("/api/wifi", HTTP_DELETE, Controller::deleteWiFi);
+	
+/*	// Route for root / web page
+	HttpServer::web.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
+		request->send_P(200, "text/html", index_html, processor);
+	});
+	HttpServer::web.on("/temperature", HTTP_GET, [](AsyncWebServerRequest *request){
+		request->send_P(200, "text/plain", DhtValues::temp.c_str());
+	});
+	HttpServer::web.on("/humidity", HTTP_GET, [](AsyncWebServerRequest *request){
+		request->send_P(200, "text/plain", DhtValues::humi.c_str());
+	});*/
 
 	HttpServer::web.onNotFound(Controller::notFound);
     HttpServer::web.begin();

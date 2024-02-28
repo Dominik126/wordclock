@@ -10,6 +10,7 @@
 #include "time.h"
 #include "led.h"
 #include "utcOffset.h"
+#include "temperature.h"
 
 void Controller::index() {
   String content = Gui::index();
@@ -31,6 +32,7 @@ void Controller::saveColor() {
     (doc["brightness"].as<double>() > Led::getMaxBrightnessPercnt()) ? Led::getMaxBrightnessPercnt() : doc["brightness"].as<double>();
 
   Config::healthcheck = doc["healthcheck"].as<int>() == 1;
+  Config::autobrightness = doc["autobrightness"].as<int>() == 1;
 
   Config::save();
   Grid::setTime(Time::hour, Time::minute);

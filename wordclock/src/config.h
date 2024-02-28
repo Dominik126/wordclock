@@ -78,6 +78,14 @@
   #define DATA_PIN D4
 #endif
 
+#ifndef PHOTO_PIN
+  #define PHOTO_PIN A0
+#endif
+
+#ifndef DHT_SENSOR_PIN
+  #define DHT_SENSOR_PIN D5
+#endif
+
 #ifndef CONSUMPTION_D1_MINI
   #define CONSUMPTION_D1_MINI 170 // 170mA in active mode
 #endif
@@ -96,6 +104,7 @@ class Config {
     static color_t color_fg;
     static int power_supply;
     static double brightness;
+	static bool autobrightness;
     static bool automatic_timezone;
     static int timezone;
     static bool dnd_active;
