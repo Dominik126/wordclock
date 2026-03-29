@@ -7,6 +7,8 @@ class Devices{
   public: 
     static void isAvailable();
     static bool available;
+  protected:
+	static int notAvailableCnt;
 };
 
 #endif

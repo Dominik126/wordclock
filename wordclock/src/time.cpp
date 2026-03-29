@@ -22,7 +22,6 @@ void Time::loop() {
   
   if (s!= Time::second){
 	Time::second = s;
-	DhtValues::loop();
 	//Serial.print(DhtValues::temp);  Serial.print("°C ");
 	//Serial.print(DhtValues::humi);  Serial.println("%");
 	Grid::setTime(Time::hour, Time::minute);
@@ -41,6 +40,8 @@ void Time::loop() {
       UtcOffset::updateLocalizedUtcOffset();
       Time::ntpClient.setTimeOffset(Config::timezone);
     }
+	
+	DhtValues::loop();
 	
 	Devices::isAvailable();
 	//Serial.println(Devices::available);
